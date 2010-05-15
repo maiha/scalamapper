@@ -20,14 +20,11 @@ case class StandardStorage(repository:Repository) {
   def this(host:String, port:Int, keyspace: String, standard: String) =
     this(new Repository(new Connection(host, port), keyspace, standard))
 
-  def get(key:String, field:String): Option[String] =
-    repository.getColumn(key, field)
+  def column(name:String) = repository.StandardColumn(name)
 
-  def set(key:String, field:String, value:String): Unit =
-    repository.setColumn(key, field, value)
-
-  def del(key:String, field:String): Unit =
-    repository.delColumn(key, field)
+  def get(key:String, field:String): Option[String] = column(field).get(key)
+  def set(key:String, field:String, value:String)   = column(field).set(key, value)
+  def del(key:String, field:String)                 = column(field).del(key)
 }
 
 object StandardStorage {

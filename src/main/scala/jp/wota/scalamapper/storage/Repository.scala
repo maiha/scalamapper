@@ -14,20 +14,19 @@ case class Repository(connection:Connection, keyspace: String, standard: String)
   val consistency   = ConsistencyLevels.quorum
   val client        = Client(connection, keyspace, serialization, consistency)
 
-  def parent            = client.ColumnParent(standard, None)
-  def path(name:String) = client.ColumnPath(standard, None, name)
+  def columnParent            = client.ColumnParent(standard, None)
+  def columnPath(name:String) = client.ColumnPath(standard, None, name)
 
-//  sealed case class Column(name:String) {
-
-  def getColumn(row:String, column:String) :Option[String] =
-    client(row, path(column))
-
-  def setColumn(row:String, column:String, value:String) =
-    client(row, path(column)) = value.toString
-
-  def delColumn(row:String, column:String): Unit = {
-    client.remove(row, path(column))
+  case class StandardColumn(name:String) {
+    def path = columnPath(name)
+    def get(key:String): Option[String] = client.get(key, path)
+    def set(key:String, value:String)   = client.update(key, path, value.toString)
+    def del(key:String)                 = client.remove(key, path)
+//    def count(key:String): Nothing
+//    def exist(key:String): Nothing
   }
+
+//  def StandardColumn(name:String) = new StandardColumn(name)
 }
 
 

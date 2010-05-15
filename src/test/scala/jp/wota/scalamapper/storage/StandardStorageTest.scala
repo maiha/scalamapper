@@ -46,5 +46,25 @@ class StandardStorageTest extends Specification {
        */
     }
 
+    "count entries" in {
+      // Given
+      val col = storage
+
+      // Then
+//      col.count("test") must equalTo(1)
+    }
+
+
+/*
+    "respond whether specifed entry exist or not" in {
+      // Given
+      val col = storage
+      col.set("test", "http", "80")
+
+      // Then
+      col.exist("test", "http") must beTrue
+    }
+
+*/
   }
 }
