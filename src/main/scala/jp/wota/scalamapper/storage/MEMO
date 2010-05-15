@@ -1,0 +1,80 @@
+/* ----------------------------------------------------------------------
+ [Storage class] draft
+
+   import jp.wota.scalamapper._
+
+   // KVS
+   val kvs = new KeyValueStorage("127.0.0.1", 9160, "Keyspace1", "Standard2")
+   kvs.set("port", "80")
+   kvs.get("port") // => "80"
+   // apply/update accessors are also available
+   kvs("port") = 8080  // Accepts any type of value (called toString)
+   kvs("port") // => "8080"
+   // same as
+
+   // Column
+   val User = new ColumnStorage("127.0.0.1", 9160, "Keyspace1", "Super1")
+   val maiha = User("maiha")
+   maiha("lang") = , "Scala")
+   maiha("lang") // => "Scala"
+   // same as
+   User("maiha", "lang") = "Scala"
+
+   // SuperColumnStorage
+   val User = new SuperColumnStorage("127.0.0.1", 9160, "Keyspace1", "Super1")
+   val maiha = User("maiha")
+   maiha("lang", "modeling") = "Scala"
+   maiha("lang", "coding")   = "Ruby"
+   maiha("lang") // => Map("modeling"->"Scala", "coding"->"Ruby")
+   // same as
+   maiha("lang") = Map("modeling"->"Scala", "coding"->"Ruby")
+   // same as
+   User("maiha", "lang") = Map("modeling"->"Scala", "coding"->"Ruby")
+
+   // Record
+   val User = new RecordStorage("127.0.0.1", 9160, "Keyspace1", "Super1")
+
+   // [data] Data ( Just has storage accessor )
+
+   // [interaction] Read ( Data + Read : get method )
+
+   // [interaction] Write ( Data + Write : set method )
+
+   // Record ( Data + Read + Write )
+
+   // ScalaMapper
+   User = new MapperStorage(("127.0.0.1", 9160, "Keyspace1", "Super1") {
+     property "name"
+     property "age"
+   }
+   maiha = User.find("maiha")
+
+
+   // ScalaRecord
+   object User extends ScalaRecord
+   User.find(key)
+   record = new User
+   record.attributes
+   record("name") = "xxx"  // not saved yet
+   record.save
+   
+
+   // Resource
+   
+   kvs.get("port") // => "80"
+
+   val config = new Storage extends  = Storage()
+   val storage = Storage("userA", "app1")
+   val storage = Storage(new Connection("127.0.0.1", 9160), "userA", "app1")
+
+   storage.set("101", "name", "maiha")
+   storage.set("101:name", "maiha")
+   storage("101", "name") = "maiha"
+   storage("101:name") = "maiha"
+
+   storage.get("101", "name") // => "maiha"
+   storage.get("101:name")    // => "maiha"
+   storage("101", "name")     // => "maiha"
+   storage("101:name")        // => "maiha"
+ */
+

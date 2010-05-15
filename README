@@ -1,13 +1,78 @@
 scalamapper
 ===========
 
+  A scala library to provides ORM for cassandra.
 
-Nothing implemented yet.
+  This is a wrapper to the scalandra.
+    http://github.com/nodeta/scalandra
+
+
+Storage
+=======
+
+  Implemnted
+
+    * StandardStorage
+
+  TODO
+
+    * SuperStorage
+    * KeyValueStorage
+
+
+Model
+=====
+
+  Implemnted
+
+    nothing
+
+  TODO
+
+    * ScalaMapper
+    * ScalaRecord
+
+
+Example
+=======
+
+  * StandardStorage (Use just like KVS)
+
+    import jp.wota.scalamapper.storage._
+    val user = new StandardStorage("127.0.0.1", 9160, "Keyspace1", "Standard2")
+
+    // get
+    user.get("101", "name") // => None
+
+    // set
+    user.set("101", "name", "maiha")
+    user.get("101", "name") // => Some("maiha")
+
+    // del
+    user.del("101", "name")
+    user.get("101", "name") // => None
+
+
+Required
+========
+
+  * Scala2.8RC2 (tested on this version)
+    -> specs_2.8.0.RC2-1.6.5-SNAPSHOT.jar
+
+  * scalandra (used 2.8 branch)
+    -> scalandra_2.8.0.RC2-0.3.0-dev.jar
+       -> apache-cassandra-0.6.1.jar
+       -> cassandra-javautils.jar     
+       -> libthrift-r917130.jar
+       -> log4j-1.2.14.jar
+       -> slf4j-log4j12-1.5.8.jar
+       -> slf4j-api-1.5.8.jar
 
 
 Homepage
 ========
   http://github.com/maiha/scalamapper
+
 
 Author
 ======
