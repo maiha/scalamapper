@@ -8,21 +8,19 @@ class StandardStorageTest extends Specification {
   doBeforeSpec {
   }
 
-  def storage = new StandardStorage("127.0.0.1", 9160, "Keyspace1", "Standard2")
+  val storage = new StandardStorage("127.0.0.1", 9160, "Test", "Standard1")
 
   "StandardStorage" should {
     "write and read string value by set/get" in {
-      // Given
-      val col = storage
       // set another value
-      col.set("test", "http", "80")
-      col.get("test", "http") must beSome("80")
+      storage.set("lang", "ver", "2.8")
+      storage.get("lang", "ver") must beSome("2.8")
 
       // when
-      col.set("test", "http", "8080")
+      storage.set("lang", "ver", "2.7.7")
 
       // Then
-      col.get("test", "http") must beSome("8080")
+      storage.get("lang", "ver") must beSome("2.7.7")
       /*
        get Keyspace1.Standard2['test']['http']
        => (column=http, value=8080, timestamp=1273957637234)
@@ -31,15 +29,14 @@ class StandardStorageTest extends Specification {
 
     "delete an entry" in {
       // Given
-      val col = storage
-      col.set("test", "http", "80")
-      col.get("test", "http") must beSome("80")
+      storage.set("lang", "ver", "2.8")
+      storage.get("lang", "ver") must beSome("2.8")
 
       // When
-      col.del("test", "http")
+      storage.del("lang", "ver")
 
-      // When
-      col.get("test", "http") must beNone
+      // Then
+      storage.get("lang", "ver") must beNone
       /*
        get Keyspace1.Standard2['test']['http']
        => (column=http, value=8080, timestamp=1273957637234)
@@ -47,11 +44,14 @@ class StandardStorageTest extends Specification {
     }
 
     "count entries" in {
-      // Given
-      val col = storage
+      "(case no entries)" in {
+	storage.set("lang", "ver", "2.8")
+	storage.count("lang") must equalTo(1)
+      }
 
-      // Then
-//      col.count("test") must equalTo(1)
+      "(case parent not found))" in {
+	storage.count("___should_not_exist___") must equalTo(0)
+      }
     }
 
 
@@ -59,10 +59,10 @@ class StandardStorageTest extends Specification {
     "respond whether specifed entry exist or not" in {
       // Given
       val col = storage
-      col.set("test", "http", "80")
+      storage.set("lang", "ver", "2.8")
 
       // Then
-      col.exist("test", "http") must beTrue
+      storage.exist("lang", "ver") must beTrue
     }
 
 */

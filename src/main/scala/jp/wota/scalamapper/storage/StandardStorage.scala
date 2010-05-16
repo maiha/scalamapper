@@ -22,7 +22,6 @@ case class StandardStorage(repository:Repository) {
     this(new Repository(new Connection(host, port), keyspace, standard))
 
   def column(name:String) = repository.StandardColumn(name)
-  def parent              = repository.columnParent
 
   def get(key:String, field:String): Option[String] = column(field).get(key)
   def set(key:String, field:String, value:String)   = column(field).set(key, value)
