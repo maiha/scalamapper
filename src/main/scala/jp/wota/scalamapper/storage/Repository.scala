@@ -18,11 +18,12 @@ case class Repository(connection:Connection, keyspace: String, standard: String)
   def columnPath(name:String) = client.ColumnPath(standard, None, name)
 
   case class StandardColumn(name:String) {
-    def path = columnPath(name)
+    def path   = columnPath(name)
+    def parent = columnParent
     def get(key:String): Option[String] = client.get(key, path)
     def set(key:String, value:String)   = client.update(key, path, value.toString)
     def del(key:String)                 = client.remove(key, path)
-//    def count(key:String): Nothing
+    def count(key:String)               = client.count(key, parent)
 //    def exist(key:String): Nothing
   }
 
