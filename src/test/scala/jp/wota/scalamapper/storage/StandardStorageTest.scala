@@ -13,14 +13,14 @@ class StandardStorageTest extends Specification {
   "StandardStorage" should {
     "write and read string value by set/get" in {
       // set another value
-      storage.set("lang", "ver", "2.8")
-      storage.get("lang", "ver") must beSome("2.8")
+      storage.set("Scala", "ver", "2.8")
+      storage.get("Scala", "ver") must beSome("2.8")
 
       // when
-      storage.set("lang", "ver", "2.7.7")
+      storage.set("Scala", "ver", "2.7.7")
 
       // Then
-      storage.get("lang", "ver") must beSome("2.7.7")
+      storage.get("Scala", "ver") must beSome("2.7.7")
       /*
        get Keyspace1.Standard2['test']['http']
        => (column=http, value=8080, timestamp=1273957637234)
@@ -29,14 +29,14 @@ class StandardStorageTest extends Specification {
 
     "delete an entry" in {
       // Given
-      storage.set("lang", "ver", "2.8")
-      storage.get("lang", "ver") must beSome("2.8")
+      storage.set("Scala", "ver", "2.8")
+      storage.get("Scala", "ver") must beSome("2.8")
 
       // When
-      storage.del("lang", "ver")
+      storage.del("Scala", "ver")
 
       // Then
-      storage.get("lang", "ver") must beNone
+      storage.get("Scala", "ver") must beNone
       /*
        get Keyspace1.Standard2['test']['http']
        => (column=http, value=8080, timestamp=1273957637234)
@@ -45,8 +45,9 @@ class StandardStorageTest extends Specification {
 
     "count entries" in {
       "(case no entries)" in {
-	storage.set("lang", "ver", "2.8")
-	storage.count("lang") must equalTo(1)
+	storage.set("Scala", "ver", "2.8")
+	storage.set("Scala", "author", "odersky")
+	storage.count("Scala") must equalTo(2)
       }
 
       "(case parent not found))" in {
@@ -54,15 +55,22 @@ class StandardStorageTest extends Specification {
       }
     }
 
+/*
+    "fetch keys from the entry" in {
+      storage.set("Scala", "ver", "2.8")
+      storage.set("Scala", "author", "odersky")
+      storage.keys("Scala") must equalTo(List("author","ver"))
+    }
+*/
 
 /*
     "respond whether specifed entry exist or not" in {
       // Given
       val col = storage
-      storage.set("lang", "ver", "2.8")
+      storage.set("Scala", "ver", "2.8")
 
       // Then
-      storage.exist("lang", "ver") must beTrue
+      storage.exist("Scala", "ver") must beTrue
     }
 
 */

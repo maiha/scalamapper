@@ -12,12 +12,15 @@ Storage
 
   Implemnted
 
-    * StandardStorage
+    * StandardStorage (get/set/del/count)
+    * SuperStorage    (get/set/del/count)
 
   TODO
 
-    * SuperStorage
     * KeyValueStorage
+    * multiget
+    * multiget_slice
+    * better accessor
 
 
 Model
@@ -36,7 +39,7 @@ Model
 Example
 =======
 
-  * StandardStorage (Use just like KVS)
+  * StandardStorage (Use just like RDB)
 
     import jp.wota.scalamapper.storage._
     val user = new StandardStorage("127.0.0.1", 9160, "Keyspace1", "Standard2")
@@ -51,6 +54,19 @@ Example
     // del
     user.del("101", "name")
     user.get("101", "name") // => None
+
+
+  * SuperStorage
+
+    import jp.wota.scalamapper.storage._
+    val friends = new SuperStorage("127.0.0.1", 9160, "Keyspace1", "Super1")
+
+    // get
+    friends.get("maiha", "airi", "email") // => None
+
+    // set
+    friends.set("maiha", "airi", "email", "airi@example.com")
+    friends.get("maiha", "airi", "email") // => Some(""airi@example.com")
 
 
 Required

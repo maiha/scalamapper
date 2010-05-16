@@ -26,7 +26,8 @@ case class StandardStorage(repository:Repository) {
   def get(key:String, field:String): Option[String] = column(field).get(key)
   def set(key:String, field:String, value:String)   = column(field).set(key, value)
   def del(key:String, field:String)                 = column(field).del(key)
-  def count(key:String)                             = column("dummy").count(key)
+
+  def count(key:String) = column("dummy").count(key)
 }
 
 object StandardStorage {
