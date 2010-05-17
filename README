@@ -12,8 +12,8 @@ Storage
 
   Implemnted
 
-    * StandardStorage (get/set/del/count)
-    * SuperStorage    (get/set/del/count)
+    * StandardStorage (get,set,del,count,slice(for1),keys(for1))
+    * SuperStorage    (get,set,del,count)
 
   TODO
 

@@ -9,38 +9,22 @@ class StandardStorageTest extends Specification {
   }
 
   val storage = new StandardStorage("127.0.0.1", 9160, "Test", "Standard1")
+  def scala_ver_28_exist {
+    storage.set("Scala", "ver", "2.8")
+    storage.get("Scala", "ver") must beSome("2.8")
+  }
 
   "StandardStorage" should {
     "write and read string value by set/get" in {
-      // set another value
-      storage.set("Scala", "ver", "2.8")
-      storage.get("Scala", "ver") must beSome("2.8")
-
-      // when
+      scala_ver_28_exist
       storage.set("Scala", "ver", "2.7.7")
-
-      // Then
       storage.get("Scala", "ver") must beSome("2.7.7")
-      /*
-       get Keyspace1.Standard2['test']['http']
-       => (column=http, value=8080, timestamp=1273957637234)
-       */
     }
 
     "delete an entry" in {
-      // Given
-      storage.set("Scala", "ver", "2.8")
-      storage.get("Scala", "ver") must beSome("2.8")
-
-      // When
+      scala_ver_28_exist
       storage.del("Scala", "ver")
-
-      // Then
       storage.get("Scala", "ver") must beNone
-      /*
-       get Keyspace1.Standard2['test']['http']
-       => (column=http, value=8080, timestamp=1273957637234)
-       */
     }
 
     "count entries" in {
@@ -55,13 +39,22 @@ class StandardStorageTest extends Specification {
       }
     }
 
-/*
-    "fetch keys from the entry" in {
-      storage.set("Scala", "ver", "2.8")
+    "slice entries" in {
+      storage.set("Scala", "ver", "2.8") // target key
       storage.set("Scala", "author", "odersky")
-      storage.keys("Scala") must equalTo(List("author","ver"))
+      storage.set("Ruby" , "ver", "1.8") // anothor key
+
+      storage.slice("Scala") must equalTo(Map("author"->"odersky", "ver"->"2.8"))
     }
-*/
+
+    "fetch keys from the entry" in {
+      storage.set("Scala", "ver", "2.8") // target key
+      storage.set("Scala", "author", "odersky")
+      storage.set("Ruby" , "ver", "1.8") // anothor key
+
+      storage.keys("Scala")  must equalTo(List("author","ver"))
+    }
+
 
 /*
     "respond whether specifed entry exist or not" in {

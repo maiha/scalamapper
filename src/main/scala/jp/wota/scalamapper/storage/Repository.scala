@@ -22,7 +22,6 @@ case class Repository(connection:Connection, keyspace: String, standard: String)
   /* ----------------------------------------------------------------------
    * Functional API
    */
-  // abstract function
   def get(key:String,sub:Option[String], name:String) =
     client.get(key, pathFor(sub,name))
   def set(key:String,sub:Option[String], name:String, value:String) =
@@ -32,17 +31,40 @@ case class Repository(connection:Connection, keyspace: String, standard: String)
   def count(key:String, sub:Option[String]) =
     client.count(key, parentFor(sub))
 
-  // for standard column
-  def get(key:String, name:String): Option[String] = get(key, None, name)
-  def set(key:String, name:String, value:String):Unit = set(key, None, name, value)
-  def del(key:String, name:String) { del(key, None, name) }
-  def count(key:String): Int = count(key, None)
+  // slice
+/*
+  list<KeySlice> get_range_slice(1:required string keyspace, 
+                                 2:required ColumnParent column_parent, 
+                                 3:required SlicePredicate predicate,
+                                 4:required string start_key="", 
+                                 5:required string finish_key="", 
+                                 6:required i32 row_count=100, 
+                                 7:required ConsistencyLevel consistency_level=ONE)
+*/
 
-  // for super column
-  def get(key:String, sub:String, name:String): Option[String] = get(key, Some(sub), name)
-  def set(key:String, sub:String, name:String, value:String):Unit = set(key, Some(sub), name, value)
-  def del(key:String, sub:String, name:String) { del(key, Some(sub), name) }
-  def count(key:String, sub:String): Int = count(key, Some(sub))
+/*
+Requires Cassandra 0.6
+      list<KeySlice> get_range_slices(keyspace, column_parent, predicate, range, consistency_level) 
+*/
+
+/*
+  def get_range_slices(
+    key         : String,
+    sub         : Option[String],
+    predicate   : Option[String],
+    range       : Range,
+    consistency : ConsistencyLevels
+  ) = 1
+  */
+
+  import client.StandardSlice
+  val inf = 2147483647 // 2**32-1
+
+//  def standard_get_range_slices(key : String, sub:String, predicate : StandardSlice) =
+  def standard_get_range_slices(key:String, sub:Option[String], start:Option[String], finish:Option[String], count:Int = 2147483647) =
+    client.get(key, parentFor(sub), StandardSlice(Range(start, finish, Ascending, count)))
+  def standard_keys(key:String, sub:Option[String], start:Option[String], finish:Option[String], count:Int = 2147483647) =
+    standard_get_range_slices(key,sub,start,finish,count).keys.toList
 
   /* ----------------------------------------------------------------------
    * Column Oriented API
