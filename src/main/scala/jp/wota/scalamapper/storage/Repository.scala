@@ -20,7 +20,7 @@ case class Repository(connection:Connection, keyspace: String, standard: String)
   def pathFor(sub:Option[String], name:String) = client.ColumnPath(standard, sub, name)
 
   /* ----------------------------------------------------------------------
-   * Functional API
+   * Functional API (powered by scalandra)
    */
   def get(key:String,sub:Option[String], name:String) =
     client.get(key, pathFor(sub,name))
@@ -32,16 +32,18 @@ case class Repository(connection:Connection, keyspace: String, standard: String)
     client.count(key, parentFor(sub))
 
   // slice
-/*
-  list<KeySlice> get_range_slice(1:required string keyspace, 
-                                 2:required ColumnParent column_parent, 
-                                 3:required SlicePredicate predicate,
-                                 4:required string start_key="", 
-                                 5:required string finish_key="", 
-                                 6:required i32 row_count=100, 
-                                 7:required ConsistencyLevel consistency_level=ONE)
-*/
 
+  import client.StandardSlice
+  val inf = 2147483647 // 2**32-1
+
+  def standard_get_range_slices(key:String, sub:Option[String], start:Option[String], finish:Option[String], count:Int = inf) =
+    client.get(key, parentFor(sub), StandardSlice(Range(start, finish, Ascending, count)))
+  def standard_keys(key:String, sub:Option[String], start:Option[String], finish:Option[String], count:Int = 2147483647) =
+    standard_get_range_slices(key,sub,start,finish,count).keys.toList
+
+  /* ----------------------------------------------------------------------
+   * Cassandra Thrift API
+   */
 /*
 Requires Cassandra 0.6
       list<KeySlice> get_range_slices(keyspace, column_parent, predicate, range, consistency_level) 
@@ -56,15 +58,8 @@ Requires Cassandra 0.6
     consistency : ConsistencyLevels
   ) = 1
   */
-
-  import client.StandardSlice
-  val inf = 2147483647 // 2**32-1
-
-//  def standard_get_range_slices(key : String, sub:String, predicate : StandardSlice) =
-  def standard_get_range_slices(key:String, sub:Option[String], start:Option[String], finish:Option[String], count:Int = 2147483647) =
-    client.get(key, parentFor(sub), StandardSlice(Range(start, finish, Ascending, count)))
-  def standard_keys(key:String, sub:Option[String], start:Option[String], finish:Option[String], count:Int = 2147483647) =
-    standard_get_range_slices(key,sub,start,finish,count).keys.toList
+  
+  
 }
 
 
