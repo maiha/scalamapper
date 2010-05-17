@@ -1,6 +1,35 @@
+/* Deprecated: Use jp.wota.scalamapper.storage._
+
 package jp.wota.scalamapper.storage.oo
 
+import com.nodeta.scalandra._
+import org.apache.cassandra.thrift.{NotFoundException, ThriftGlue, ConsistencyLevel}
+import com.nodeta.scalandra.serializer.StringSerializer
+
 import jp.wota.scalamapper.storage._
+
+case class OORepository(connection:Connection, keyspace: String, standard: String) {
+  def this(host:String, port:Int, keyspace: String, standard: String) =
+    this(new Connection(host, port), keyspace, standard)
+
+  val serialization = Serialization(StringSerializer, StringSerializer, StringSerializer)
+  val consistency   = ConsistencyLevels.quorum
+  val client        = Client(connection, keyspace, serialization, consistency)
+  /* ----------------------------------------------------------------------
+   * Column Oriented API
+   */
+  class AbstractColumn(name:String, group:Option[String]) {
+    val parent = client.ColumnParent(standard, group)
+    val path   = client.ColumnPath(standard, group, name)
+
+    def get(key:String): Option[String] = client.get(key, path)
+    def set(key:String, value:String)   = client.update(key, path, value.toString)
+    def del(key:String)                 = client.remove(key, path)
+    def count(key:String)               = client.count(key, parent)
+  }
+  case class StandardColumn(name:String)            extends AbstractColumn(name, None)
+  case class SuperColumn(name:String, group:String) extends AbstractColumn(name, Some(group))
+}
 
 case class StandardStorage(repository:Repository) {
   def this(host:String, port:Int, keyspace: String, standard: String) =
@@ -46,3 +75,5 @@ trait StandardColumn {
 }
 
  */
+
+*/

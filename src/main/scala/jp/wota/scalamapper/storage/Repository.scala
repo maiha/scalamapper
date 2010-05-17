@@ -65,21 +65,6 @@ Requires Cassandra 0.6
     client.get(key, parentFor(sub), StandardSlice(Range(start, finish, Ascending, count)))
   def standard_keys(key:String, sub:Option[String], start:Option[String], finish:Option[String], count:Int = 2147483647) =
     standard_get_range_slices(key,sub,start,finish,count).keys.toList
-
-  /* ----------------------------------------------------------------------
-   * Column Oriented API
-   */
-  class AbstractColumn(name:String, group:Option[String]) {
-    val parent = client.ColumnParent(standard, group)
-    val path   = client.ColumnPath(standard, group, name)
-
-    def get(key:String): Option[String] = client.get(key, path)
-    def set(key:String, value:String)   = client.update(key, path, value.toString)
-    def del(key:String)                 = client.remove(key, path)
-    def count(key:String)               = client.count(key, parent)
-  }
-  case class StandardColumn(name:String)            extends AbstractColumn(name, None)
-  case class SuperColumn(name:String, group:String) extends AbstractColumn(name, Some(group))
 }
 
 
